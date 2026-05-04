@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Категории — Finance tracker</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <h1>Finance tracker</h1>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="/budgets">Финансы</a>
+        <a href="/categories">Категории</a>
+        <a href="/goals">Цели</a>
+        <a href="#">Настройки</a>
+    </nav>
+</header>
+
+<main>
+    <section class="card-section">
+        <h2>Категории</h2>
+
+        <div class="card search-card">
+            <form th:action="@{/categories}" method="get">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="search-title">Поиск по ID или названию</label>
+                        <input type="text" id="search-title" name="query" th:value="${query}" placeholder="Введите ID или название...">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Найти</button>
+                        <a th:href="@{/categories}" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">Сбросить</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card add-card">
+            <form th:action="@{/categories/add}" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="new-title">Название</label>
+                        <input type="text" id="new-title" name="title" placeholder="Название категории" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="typeId">ID типа</label>
+                        <input type="number" id="typeId" name="typeId" placeholder="1" min="1" required style="width: 100px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="userId">ID пользователя</label>
+                        <input type="number" id="userId" name="userId" placeholder="1" min="1" required style="width: 140px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>ID типа</th>
+                    <th>ID пользователя</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(categories)}">
+                    <td colspan="4" class="empty-state">Категории не найдены</td>
+                </tr>
+                <tr th:each="cat : ${categories}">
+                    <td th:text="${cat.id}"></td>
+                    <td th:text="${cat.title}"></td>
+                    <td th:text="${cat.typeId}"></td>
+                    <td th:text="${cat.userId}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${query == null or query.isEmpty()}"
+             style="margin-top: 24px; display: flex; justify-content: center; gap: 10px; align-items: center;">
+
+            <a th:if="${currentPage > 0}"
+               th:href="@{/categories(page=${currentPage - 1})}"
+               class="btn btn-secondary" style="text-decoration: none;">Назад</a>
+
+            <span style="font-weight: 600;">Страница <span th:text="${currentPage + 1}">1</span></span>
+
+            <a th:if="${categories.size() == 10}"
+               th:href="@{/categories(page=${currentPage + 1})}"
+               class="btn btn-secondary" style="text-decoration: none;">Вперед</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    © 2026 Finance tracker
+</footer>
+
+</body>
+</html>

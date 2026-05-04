@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финансовый трекер</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <h1>Finance tracker</h1>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="/budgets">Финансы</a>
+        <a href="/categories">Категории</a>
+        <a href="/goals">Цели</a>
+        <a href="/admin">Админ Панель</a>
+    </nav>
+</header>
+
+<main>
+    <section class="balance-card">
+        <div class="balance-header">
+            <span>Общий баланс</span>
+        </div>
+        <div class="balance-amount">1,247,500 ₽</div>
+        <div class="balance-details">
+            <div class="detail income">
+                <span>Доход за месяц</span>
+                <strong>+350,000 ₽</strong>
+            </div>
+            <div class="detail expense">
+                <span>Расход за месяц</span>
+                <strong>-198,450 ₽</strong>
+            </div>
+            <div class="detail savings">
+                <span>Накоплено</span>
+                <strong>+151,550 ₽</strong>
+            </div>
+        </div>
+
+        <div class="balance-action">
+            <button class="add">Добавить</button>
+            <button class="remove">Списать</button>
+        </div>
+    </section>
+
+    <div class="content-grid">
+        <div class="left-column">
+            <section class="card-section">
+                <h2>Мои счета</h2>
+                <div class="cards-grid">
+                    <div class="card account">
+                        <div class="card-title">Основная карта</div>
+                        <div class="card-subtitle">Дебетовая</div>
+                        <div class="card-amount">847,500 ₽</div>
+                    </div>
+                    <div class="card account">
+                        <div class="card-title">Накопления</div>
+                        <div class="card-subtitle">Сберегательный</div>
+                        <div class="card-amount">300,000 ₽</div>
+                    </div>
+                    <div class="card account">
+                        <div class="card-title">Инвестиции</div>
+                        <div class="card-subtitle">Брокерский</div>
+                        <div class="card-amount">100,000 ₽</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-section">
+                <h2>Последние операции</h2>
+                <div class="card transactions" onclick="location.href='/transactions'" style="cursor: pointer;">
+                    <div class="transaction income">
+                        <span>Зарплата</span>
+                        <strong>+180,000 ₽</strong>
+                    </div>
+                    <div class="transaction expense">
+                        <span>Продуктовый магазин</span>
+                        <strong>-3,450 ₽</strong>
+                    </div>
+                    <div class="transaction expense">
+                        <span>Кафе "Старбакс"</span>
+                        <strong>-890 ₽</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-section">
+                <h2>Бюджет по категориям</h2>
+                <div class="card budgets">
+                    <div class="budget-item">
+                        <span>Продукты</span>
+                        <span>42,000 / 50,000 ₽</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 84%; background-color:#2E7D32;"></div>
+                        </div>
+                    </div>
+                    <div class="budget-item">
+                        <span>Транспорт</span>
+                        <span>8,500 / 15,000 ₽</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 57%; background-color:#2E7D32;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="right-column">
+            <section class="card-section">
+                <h2>Финансовые цели</h2>
+                <div class="card goals">
+                    <div class="goal-item">
+                        <span>Отпуск в Турции</span>
+                        <span>180,000 / 250,000 ₽</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 72%; background-color:#2E7D32;"></div>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <span>Новый ноутбук</span>
+                        <span>95,000 / 150,000 ₽</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 63%; background-color:#2E7D32;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-section">
+                <h2>Быстрая статистика</h2>
+                <div class="card stats">
+                    <div class="stat-item">
+                        <span>Транзакций за месяц</span>
+                        <strong>127</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Средний чек</span>
+                        <strong>1,562 ₽</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Рост за год</span>
+                        <strong>+18%</strong>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<footer>
+    © 2026 Finance tracker
+</footer>
+
+</body>
+</html>

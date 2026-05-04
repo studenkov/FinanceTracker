@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Цели — Finance tracker</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<header>
+    <h1>Finance tracker</h1>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="/budgets">Финансы</a>
+        <a href="/categories">Категории</a>
+        <a href="/goals">Цели</a>
+        <a href="#">Настройки</a>
+    </nav>
+</header>
+
+<main>
+    <section class="card-section">
+        <h2>Мои финансовые цели</h2>
+
+        <div class="card add-card">
+            <form th:action="@{/goals/add}" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Название</label>
+                        <input type="text" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Цель (₽)</label>
+                        <input type="number" step="0.01" name="targetAmount" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Накоплено (₽)</label>
+                        <input type="number" step="0.01" name="currentAmount" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>ID Аккаунта</label>
+                        <input type="number" name="accountId" value="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Создать</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="cards-grid">
+            <div th:if="${#lists.isEmpty(goals)}" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #aaa;">
+                Пока целей нет.
+            </div>
+
+            <div th:each="goal : ${goals}" class="card goal-card-vertical">
+                <div>
+                    <div th:with="percent=${goal.targetAmount > 0 ? (goal.currentAmount * 100 / goal.targetAmount) : 0}"
+                         class="percent-badge" th:text="${#numbers.formatDecimal(percent, 1, 0)} + '%'">0%</div>
+
+                    <h3 th:text="${goal.title}">Цель</h3>
+                    <p style="font-size: 14px; color: #666; margin-top: 4px;">
+                        Цель: <span th:text="${#numbers.formatDecimal(goal.targetAmount, 1, 'WHITESPACE', 0, 'POINT')}"></span> ₽
+                    </p>
+
+                    <div class="progress-bar" style="margin: 24px 0;">
+                        <div class="progress"
+                             th:with="percent=${goal.targetAmount > 0 ? (goal.currentAmount * 100 / goal.targetAmount) : 0}"
+                             th:style="'width: ' + ${percent > 100 ? 100 : percent} + '%; background-color: var(--color-income);'"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="goal-label">Уже накоплено</div>
+                    <div class="goal-amount-big" th:text="${#numbers.formatDecimal(goal.currentAmount, 1, 'WHITESPACE', 0, 'POINT')} + ' ₽'">0 ₽</div>
+
+                    <form th:action="@{/goals/delete/{id}(id=${goal.id})}" method="post" style="border-top: 1px solid #eee; padding-top: 12px;">
+                        <button type="submit" style="background:none; border:none; color:var(--color-expense); cursor:pointer; font-size: 13px; font-weight: 600;">Удалить цель</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(goals) or currentPage > 0}"
+             style="margin-top: 32px; display: flex; justify-content: center; gap: 12px; align-items: center;">
+            <a th:if="${currentPage > 0}"
+               th:href="@{/goals(page=${currentPage - 1})}"
+               class="btn btn-secondary" style="text-decoration: none; padding: 8px 16px;">Назад</a>
+
+            <span style="font-weight: 600;">Страница <span th:text="${currentPage + 1}">1</span></span>
+
+            <a th:if="${hasNext}"
+               th:href="@{/goals(page=${currentPage + 1})}"
+               class="btn btn-secondary" style="text-decoration: none; padding: 8px 16px;">Вперед</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    © 2026 Finance tracker
+</footer>
+
+</body>
+</html>
