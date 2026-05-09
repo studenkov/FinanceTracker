@@ -15,10 +15,11 @@
     <h1>Finance tracker</h1>
     <nav>
         <a href="/">Главная</a>
+        <a href="/transactions">Транзакции</a>
         <a href="/budgets">Финансы</a>
         <a href="/categories">Категории</a>
         <a href="/goals">Цели</a>
-        <a href="#">Настройки</a>
+        <a href="/admin">Админ Панель</a>
     </nav>
 </header>
 
@@ -26,90 +27,41 @@
     <section class="card-section">
         <h2>Транзакции</h2>
 
-        <div class="card search-card">
-            <form th:action="@{/transactions}" method="get">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="search-query">Поиск по ID или заметке</label>
-                        <input type="text" id="search-query" name="query" th:value="${query}" placeholder="Введите ID или заметку...">
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Найти</button>
-                        <a th:href="@{/transactions}" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">Сбросить</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-
         <div class="card add-card">
             <form th:action="@{/transactions/add}" method="post">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="categoryId">ID категории</label>
-                        <input type="number" id="categoryId" name="categoryId" placeholder="1" min="1" required style="width: 120px;">
+                        <label>Категория</label>
+                        <select name="category.id" required>
+                            <option value="" disabled selected>Выберите категорию</option>
+                            <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.title}"></option>
+                        </select>
                     </div>
+
                     <div class="form-group">
-                        <label for="date">Дата</label>
-                        <input type="date" id="date" name="date" required style="width: 150px;">
+                        <label>Счёт</label>
+                        <select name="account.id" required>
+                            <option value="" disabled selected>Выберите счёт</option>
+                            <option th:each="a : ${accounts}" th:value="${a.id}" th:text="${a.title}"></option>
+                        </select>
                     </div>
+
                     <div class="form-group">
-                        <label for="note">Заметка</label>
-                        <input type="text" id="note" name="note" placeholder="Описание транзакции">
+                        <label>Дата</label>
+                        <input type="date" name="date" required>
                     </div>
+
                     <div class="form-group">
-                        <label for="amount">Сумма</label>
-                        <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required style="width: 120px;">
+                        <label>Сумма</label>
+                        <input type="number" name="amount" step="0.01" required>
                     </div>
-                    <div class="form-group">
-                        <label for="accountId">ID счёта</label>
-                        <input type="number" id="accountId" name="accountId" placeholder="1" min="1" required style="width: 100px;">
-                    </div>
+
                     <button type="submit" class="btn btn-primary">Добавить</button>
                 </div>
             </form>
         </div>
 
-        <div class="card table-container">
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>ID категории</th>
-                    <th>Дата</th>
-                    <th>Заметка</th>
-                    <th>Сумма</th>
-                    <th>ID счёта</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:if="${#lists.isEmpty(transactions)}">
-                    <td colspan="6" class="empty-state">Транзакции не найдены</td>
-                </tr>
-                <tr th:each="t : ${transactions}">
-                    <td th:text="${t.id}"></td>
-                    <td th:text="${t.categoryId}"></td>
-                    <td th:text="${t.date}"></td>
-                    <td th:text="${t.note}"></td>
-                    <td th:text="${t.amount}"></td>
-                    <td th:text="${t.accountId}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div th:if="${query == null or query.isEmpty()}"
-             style="margin-top: 24px; display: flex; justify-content: center; gap: 10px; align-items: center;">
-
-            <a th:if="${currentPage > 0}"
-               th:href="@{/transactions(page=${currentPage - 1})}"
-               class="btn btn-secondary" style="text-decoration: none;">Назад</a>
-
-            <span style="font-weight: 600;">Страница <span th:text="${currentPage + 1}">1</span></span>
-
-            <a th:if="${transactions.size() == 10}"
-               th:href="@{/transactions(page=${currentPage + 1})}"
-               class="btn btn-secondary" style="text-decoration: none;">Вперед</a>
-        </div>
+       
     </section>
 </main>
 

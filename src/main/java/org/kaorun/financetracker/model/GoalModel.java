@@ -20,18 +20,12 @@ public class GoalModel {
     @NotNull(message = "Укажите собранную сумму")
     private Double currentAmount;
 
-    @NotNull(message = "Укажите ID счета")
-    private Integer accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    @NotNull(message = "Укажите счет")
+    private AccountModel account;
 
-    public GoalModel() {
-    }
-
-    public GoalModel(String title, Double targetAmount, Double currentAmount, Integer accountId) {
-        this.title = title;
-        this.targetAmount = targetAmount;
-        this.currentAmount = currentAmount;
-        this.accountId = accountId;
-    }
+    public GoalModel() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -41,6 +35,6 @@ public class GoalModel {
     public void setTargetAmount(Double targetAmount) { this.targetAmount = targetAmount; }
     public Double getCurrentAmount() { return currentAmount; }
     public void setCurrentAmount(Double currentAmount) { this.currentAmount = currentAmount; }
-    public Integer getAccountId() { return accountId; }
-    public void setAccountId(Integer accountId) { this.accountId = accountId; }
+    public AccountModel getAccount() { return account; }
+    public void setAccount(AccountModel account) { this.account = account; }
 }

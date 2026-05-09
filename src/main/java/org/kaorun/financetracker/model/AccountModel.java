@@ -17,21 +17,17 @@ public class AccountModel {
     @NotNull(message = "Укажите баланс")
     private Double balance;
 
-    @NotNull(message = "Укажите ID пользователя")
-    private Integer userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @NotNull(message = "Укажите пользователя")
+    private UserModel user;
 
-    @NotNull(message = "Укажите ID валюты")
-    private Integer currencyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "currency_id")
+    @NotNull(message = "Укажите валюту")
+    private CurrencyModel currency;
 
-    public AccountModel() {
-    }
-
-    public AccountModel(String title, Double balance, Integer userId, Integer currencyId) {
-        this.title = title;
-        this.balance = balance;
-        this.userId = userId;
-        this.currencyId = currencyId;
-    }
+    public AccountModel() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -39,8 +35,8 @@ public class AccountModel {
     public void setTitle(String title) { this.title = title; }
     public Double getBalance() { return balance; }
     public void setBalance(Double balance) { this.balance = balance; }
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
-    public Integer getCurrencyId() { return currencyId; }
-    public void setCurrencyId(Integer currencyId) { this.currencyId = currencyId; }
+    public UserModel getUser() { return user; }
+    public void setUser(UserModel user) { this.user = user; }
+    public CurrencyModel getCurrency() { return currency; }
+    public void setCurrency(CurrencyModel currency) { this.currency = currency; }
 }

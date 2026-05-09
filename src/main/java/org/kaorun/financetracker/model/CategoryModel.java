@@ -14,27 +14,24 @@ public class CategoryModel {
     @NotBlank(message = "Поле не может быть пустым")
     private String title;
 
-    @NotNull(message = "Укажите ID типа")
-    private Integer typeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id")
+    @NotNull(message = "Укажите тип")
+    private TypeModel type;
 
-    @NotNull(message = "Укажите ID пользователя")
-    private Integer userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @NotNull(message = "Укажите пользователя")
+    private UserModel user;
 
-    public CategoryModel() {
-    }
-
-    public CategoryModel(String title, Integer typeId, Integer userId) {
-        this.title = title;
-        this.typeId = typeId;
-        this.userId = userId;
-    }
+    public CategoryModel() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    public Integer getTypeId() { return typeId; }
-    public void setTypeId(Integer typeId) { this.typeId = typeId; }
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
+    public TypeModel getType() { return type; }
+    public void setType(TypeModel type) { this.type = type; }
+    public UserModel getUser() { return user; }
+    public void setUser(UserModel user) { this.user = user; }
 }

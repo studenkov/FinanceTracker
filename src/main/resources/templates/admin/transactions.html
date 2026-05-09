@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::#page-content})}">
+<head><title>Транзакции</title></head>
+<body>
+<div id="page-content" class="card table-container admin-section active">
+    <h3 class="admin-section-title">Управление Транзакциями</h3>
+    <div class="admin-form-container">
+        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-end;">
+            <button class="btn btn-primary" onclick="toggleForm('form-add')">Добавить транзакцию</button>
+            <form th:action="@{/admin/transactions}" method="get" class="form-row" style="margin-bottom: 0;">
+                <div class="form-group"><input type="text" name="query" th:value="${query}" placeholder="Поиск (Заметка)..." required></div>
+                <button type="submit" class="btn btn-secondary">Искать</button>
+                <a th:if="${not #strings.isEmpty(query)}" th:href="@{/admin/transactions}" class="btn btn-secondary" style="text-decoration: none;">Сброс</a>
+            </form>
+        </div>
+
+        <form id="form-add" class="add-form" th:action="@{/admin/transactions/add}" method="post" th:style="${errorMessage != null ? 'display: block;' : 'display: none;'}">
+            <div class="form-row">
+                <div class="form-group"><label>Сумма</label><input type="number" step="0.01" name="amount" th:value="${entityModel?.amount}" required></div>
+                <div class="form-group"><label>Заметка</label><input type="text" name="note" th:value="${entityModel?.note}"></div>
+                <div class="form-group"><label>Дата</label><input type="date" name="date" th:value="${entityModel?.date}" required></div>
+
+                <div class="form-group">
+                    <label>Категория</label>
+                    <select name="category.id" required>
+                        <option value="" disabled selected>Выберите категорию</option>
+                        <option th:each="c : ${allCategories}" th:value="${c.id}" th:text="${c.title}" th:selected="${entityModel?.category?.id == c.id}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Счет</label>
+                    <select name="account.id" required>
+                        <option value="" disabled selected>Выберите счет</option>
+                        <option th:each="a : ${allAccounts}" th:value="${a.id}" th:text="${a.title}" th:selected="${entityModel?.account?.id == a.id}"></option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+        <tr><th>ID</th><th>Сумма</th><th>Заметка</th><th>Дата</th><th>Категория</th><th>Счет</th><th>Действия</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${data.content}">
+            <td th:text="${i?.id}"></td>
+            <td class="read-mode" th:text="${i?.amount}"></td>
+            <td class="read-mode" th:text="${i?.note}"></td>
+            <td class="read-mode" th:text="${i?.date}"></td>
+            <td class="read-mode" th:text="${i?.category?.title}"></td>
+            <td class="read-mode" th:text="${i?.account?.title}"></td>
+
+            <td class="edit-mode hidden" colspan="5">
+                <form th:action="@{/admin/transactions/update}" method="post">
+                    <input type="hidden" name="id" th:value="${i?.id}">
+                    <input type="hidden" name="currentPage" th:value="${data.number}">
+                    <input type="hidden" name="query" th:value="${query}">
+
+                    <input type="number" step="0.01" name="amount" th:value="${i?.amount}" required>
+                    <input type="text" name="note" th:value="${i?.note}">
+                    <input type="date" name="date" th:value="${i?.date}" required>
+
+                    <select name="category.id" required>
+                        <option th:each="c : ${allCategories}" th:value="${c.id}" th:text="${c.title}" th:selected="${i?.category?.id == c.id}"></option>
+                    </select>
+
+                    <select name="account.id" required>
+                        <option th:each="a : ${allAccounts}" th:value="${a.id}" th:text="${a.title}" th:selected="${i?.account?.id == a.id}"></option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary btn-sm">OK</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEdit(this, false)">X</button>
+                </form>
+            </td>
+
+            <td class="action-btns read-mode">
+                <button class="btn-sm btn-edit" onclick="toggleEdit(this, true)">Изменить</button>
+                <form th:action="@{/admin/transactions/delete}" method="post" onsubmit="return confirm('Вы уверены?');">
+                    <input type="hidden" name="id" th:value="${i?.id}">
+                    <input type="hidden" name="currentPage" th:value="${data.number}">
+                    <input type="hidden" name="query" th:value="${query}">
+                    <button type="submit" class="btn-sm btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:replace="~{admin/fragments/pagination :: paging('/admin/transactions')}"></div>
+</div>
+</body>
+</html>

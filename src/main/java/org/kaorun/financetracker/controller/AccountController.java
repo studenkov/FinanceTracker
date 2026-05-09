@@ -1,59 +1,48 @@
 package org.kaorun.financetracker.controller;
 
+import jakarta.validation.Valid;
 import org.kaorun.financetracker.model.AccountModel;
 import org.kaorun.financetracker.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.kaorun.financetracker.service.CurrencyService;
+import org.kaorun.financetracker.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/accounts")
 public class AccountController {
+    private final AccountService service;
+    private final UserService userService;
+    private final CurrencyService currencyService;
 
-    @Autowired
-    private AccountService service;
-
-    @GetMapping("/accounts")
-    public String getAll(Model model) {
-        model.addAttribute("accounts", service.findAll());
-        return "accountList";
+    public AccountController(AccountService service, UserService userService, CurrencyService currencyService) {
+        this.service = service;
+        this.userService = userService;
+        this.currencyService = currencyService;
     }
 
-    @GetMapping("/accounts/search")
-    public String search(@RequestParam String title, Model model) {
-        model.addAttribute("accounts", service.findByTitle(title));
-        return "accountList";
-    }
-
-    @GetMapping("/accounts/page")
-    public String page(@RequestParam int page, Model model) {
+    @GetMapping
+    public String getAll(Model model, @RequestParam(defaultValue = "0") int page) {
         model.addAttribute("accounts", service.findPage(page, 10));
+        model.addAttribute("allUsers", userService.findAll());
+        model.addAttribute("allCurrencies", currencyService.findAll());
+        if (!model.containsAttribute("account")) {
+            model.addAttribute("account", new AccountModel());
+        }
         return "accountList";
     }
 
-    @PostMapping("/accounts/add")
-    public String add(@RequestParam String title,
-                      @RequestParam double balance,
-                      @RequestParam int userId,
-                      @RequestParam int currencyId) {
-
-        service.add(new AccountModel(title, balance, userId, currencyId));
+    @PostMapping("/add")
+    public String add(@Valid @ModelAttribute("account") AccountModel account, BindingResult result) {
+        if (!result.hasErrors()) {
+            service.add(account);
+        }
         return "redirect:/accounts";
     }
 
-    @PostMapping("/accounts/update")
-    public String update(@RequestParam String title,
-                         @RequestParam double balance,
-                         @RequestParam int userId,
-                         @RequestParam int currencyId) {
-
-        service.update(new AccountModel(title, balance, userId, currencyId));
-        return "redirect:/accounts";
-    }
-
-    @PostMapping("/accounts/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam long id) {
         service.delete(id);
         return "redirect:/accounts";

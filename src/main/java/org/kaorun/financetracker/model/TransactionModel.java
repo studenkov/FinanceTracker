@@ -11,8 +11,10 @@ public class TransactionModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Укажите ID категории")
-    private Integer categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @NotNull(message = "Укажите категорию")
+    private CategoryModel category;
 
     @NotNull(message = "Укажите дату")
     private LocalDate date;
@@ -22,30 +24,23 @@ public class TransactionModel {
     @NotNull(message = "Укажите сумму")
     private Double amount;
 
-    @NotNull(message = "Укажите ID счета")
-    private Integer accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    @NotNull(message = "Укажите счет")
+    private AccountModel account;
 
-    public TransactionModel() {
-    }
-
-    public TransactionModel(Integer categoryId, LocalDate date, String note, Double amount, Integer accountId) {
-        this.categoryId = categoryId;
-        this.date = date;
-        this.note = note;
-        this.amount = amount;
-        this.accountId = accountId;
-    }
+    public TransactionModel() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public Integer getCategoryId() { return categoryId; }
-    public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
+    public CategoryModel getCategory() { return category; }
+    public void setCategory(CategoryModel category) { this.category = category; }
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
     public Double getAmount() { return amount; }
     public void setAmount(Double amount) { this.amount = amount; }
-    public Integer getAccountId() { return accountId; }
-    public void setAccountId(Integer accountId) { this.accountId = accountId; }
+    public AccountModel getAccount() { return account; }
+    public void setAccount(AccountModel account) { this.account = account; }
 }

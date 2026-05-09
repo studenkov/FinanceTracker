@@ -31,8 +31,7 @@ public class UserModel {
     @NotNull(message = "Укажите ID роли")
     private Integer roleId;
 
-    public UserModel() {
-    }
+    public UserModel() {}
 
     public UserModel(String username, String password, String email, String nickname, Integer roleId) {
         this.username = username;

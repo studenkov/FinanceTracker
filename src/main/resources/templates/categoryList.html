@@ -15,10 +15,11 @@
     <h1>Finance tracker</h1>
     <nav>
         <a href="/">Главная</a>
+        <a href="/transactions">Транзакции</a>
         <a href="/budgets">Финансы</a>
         <a href="/categories">Категории</a>
         <a href="/goals">Цели</a>
-        <a href="#">Настройки</a>
+        <a href="/admin">Админ Панель</a>
     </nav>
 </header>
 
@@ -42,19 +43,25 @@
         </div>
 
         <div class="card add-card">
-            <form th:action="@{/categories/add}" method="post">
+            <form th:action="@{/categories/add}" method="post" th:object="${category}">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="new-title">Название</label>
-                        <input type="text" id="new-title" name="title" placeholder="Название категории" required>
+                        <label>Название</label>
+                        <input type="text" th:field="*{title}" placeholder="Название категории" required>
                     </div>
                     <div class="form-group">
-                        <label for="typeId">ID типа</label>
-                        <input type="number" id="typeId" name="typeId" placeholder="1" min="1" required style="width: 100px;">
+                        <label>Тип</label>
+                        <select name="type.id" required>
+                            <option value="" disabled selected>Выберите тип</option>
+                            <option th:each="t : ${allTypes}" th:value="${t.id}" th:text="${t.title}"></option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="userId">ID пользователя</label>
-                        <input type="number" id="userId" name="userId" placeholder="1" min="1" required style="width: 140px;">
+                        <label>Пользователь</label>
+                        <select name="user.id" required>
+                            <option value="" disabled selected>Выберите пользователя</option>
+                            <option th:each="u : ${allUsers}" th:value="${u.id}" th:text="${u.username}"></option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Добавить</button>
                 </div>
@@ -67,8 +74,8 @@
                 <tr>
                     <th>ID</th>
                     <th>Название</th>
-                    <th>ID типа</th>
-                    <th>ID пользователя</th>
+                    <th>Тип</th>
+                    <th>Пользователь</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -78,8 +85,8 @@
                 <tr th:each="cat : ${categories}">
                     <td th:text="${cat.id}"></td>
                     <td th:text="${cat.title}"></td>
-                    <td th:text="${cat.typeId}"></td>
-                    <td th:text="${cat.userId}"></td>
+                    <td th:text="${cat.type?.title}"></td>
+                    <td th:text="${cat.user?.username}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -87,16 +94,9 @@
 
         <div th:if="${query == null or query.isEmpty()}"
              style="margin-top: 24px; display: flex; justify-content: center; gap: 10px; align-items: center;">
-
-            <a th:if="${currentPage > 0}"
-               th:href="@{/categories(page=${currentPage - 1})}"
-               class="btn btn-secondary" style="text-decoration: none;">Назад</a>
-
+            <a th:if="${currentPage > 0}" th:href="@{/categories(page=${currentPage - 1})}" class="btn btn-secondary" style="text-decoration: none;">Назад</a>
             <span style="font-weight: 600;">Страница <span th:text="${currentPage + 1}">1</span></span>
-
-            <a th:if="${categories.size() == 10}"
-               th:href="@{/categories(page=${currentPage + 1})}"
-               class="btn btn-secondary" style="text-decoration: none;">Вперед</a>
+            <a th:if="${categories.size() == 10}" th:href="@{/categories(page=${currentPage + 1})}" class="btn btn-secondary" style="text-decoration: none;">Вперед</a>
         </div>
     </section>
 </main>

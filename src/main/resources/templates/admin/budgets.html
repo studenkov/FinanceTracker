@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::#page-content})}">
+<head><title>Бюджеты</title></head>
+<body>
+<div id="page-content" class="card table-container admin-section active">
+    <h3 class="admin-section-title">Управление Бюджетами</h3>
+
+    <div class="admin-form-container">
+        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-end;">
+            <button class="btn btn-primary" onclick="toggleForm('form-add')">Добавить бюджет</button>
+            <form th:action="@{/admin/budgets}" method="get" class="form-row" style="margin-bottom: 0;">
+                <div class="form-group">
+                    <input type="text" name="query" th:value="${query}" placeholder="Поиск (Лимит)..." required>
+                </div>
+                <button type="submit" class="btn btn-secondary">Искать</button>
+                <a th:if="${not #strings.isEmpty(query)}" th:href="@{/admin/budgets}" class="btn btn-secondary" style="text-decoration: none;">Сброс</a>
+            </form>
+        </div>
+
+        <form id="form-add" class="add-form" th:action="@{/admin/budgets/add}" method="post" th:style="${errorMessage != null ? 'display: block;' : 'display: none;'}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Лимит</label>
+                    <input type="number" step="0.01" name="limitAmount" th:value="${entityModel?.limitAmount}" required>
+                </div>
+                <div class="form-group">
+                    <label>Дата начала</label>
+                    <input type="date" name="startDate" th:value="${entityModel?.startDate}" required>
+                </div>
+                <div class="form-group">
+                    <label>Дата окончания</label>
+                    <input type="date" name="endDate" th:value="${entityModel?.endDate}" required>
+                </div>
+                <div class="form-group">
+                    <label>Категория</label>
+                    <select name="category.id" required>
+                        <option value="" disabled selected>Выберите категорию</option>
+                        <option th:each="c : ${allCategories}" th:value="${c.id}" th:text="${c.title}" th:selected="${entityModel?.category?.id == c.id}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Лимит</th>
+            <th>Начало</th>
+            <th>Конец</th>
+            <th>Категория</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${data.content}">
+            <td th:text="${i?.id}"></td>
+            <td class="read-mode" th:text="${i?.limitAmount}"></td>
+            <td class="read-mode" th:text="${i?.startDate}"></td>
+            <td class="read-mode" th:text="${i?.endDate}"></td>
+            <td class="read-mode" th:text="${i?.category?.title}"></td>
+
+            <td class="edit-mode hidden" colspan="4">
+                <form th:action="@{/admin/budgets/update}" method="post">
+                    <input type="hidden" name="id" th:value="${i?.id}">
+                    <input type="hidden" name="currentPage" th:value="${data.number}">
+                    <input type="hidden" name="query" th:value="${query}">
+
+                    <input type="number" step="0.01" name="limitAmount" th:value="${i?.limitAmount}" required style="width: 100px;">
+                    <input type="date" name="startDate" th:value="${i?.startDate}" required>
+                    <input type="date" name="endDate" th:value="${i?.endDate}" required>
+
+                    <select name="category.id" required>
+                        <option th:each="c : ${allCategories}" th:value="${c.id}" th:text="${c.title}" th:selected="${i?.category?.id == c.id}"></option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary btn-sm">OK</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEdit(this, false)">X</button>
+                </form>
+            </td>
+
+            <td class="action-btns read-mode">
+                <button class="btn-sm btn-edit" onclick="toggleEdit(this, true)">Изменить</button>
+                <form th:action="@{/admin/budgets/delete}" method="post" onsubmit="return confirm('Вы уверены?');" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${i?.id}">
+                    <input type="hidden" name="currentPage" th:value="${data.number}">
+                    <input type="hidden" name="query" th:value="${query}">
+                    <button type="submit" class="btn-sm btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:replace="~{admin/fragments/pagination :: paging('/admin/budgets')}"></div>
+</div>
+</body>
+</html>

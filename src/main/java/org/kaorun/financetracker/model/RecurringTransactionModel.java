@@ -11,8 +11,10 @@ public class RecurringTransactionModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Укажите ID категории")
-    private Integer categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @NotNull(message = "Укажите категорию")
+    private CategoryModel category;
 
     @NotNull(message = "Укажите сумму")
     private Double amount;
@@ -23,36 +25,30 @@ public class RecurringTransactionModel {
     @NotNull(message = "Укажите статус активности")
     private Boolean isActive;
 
-    @NotNull(message = "Укажите ID частоты")
-    private Integer frequencyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "frequency_id")
+    @NotNull(message = "Укажите частоту")
+    private FrequencyModel frequency;
 
-    @NotNull(message = "Укажите ID счета")
-    private Integer accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    @NotNull(message = "Укажите счет")
+    private AccountModel account;
 
-    public RecurringTransactionModel() {
-    }
-
-    public RecurringTransactionModel(Integer categoryId, Double amount, LocalDate nextDate, Boolean isActive, Integer frequencyId, Integer accountId) {
-        this.categoryId = categoryId;
-        this.amount = amount;
-        this.nextDate = nextDate;
-        this.isActive = isActive;
-        this.frequencyId = frequencyId;
-        this.accountId = accountId;
-    }
+    public RecurringTransactionModel() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public Integer getCategoryId() { return categoryId; }
-    public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
+    public CategoryModel getCategory() { return category; }
+    public void setCategory(CategoryModel category) { this.category = category; }
     public Double getAmount() { return amount; }
     public void setAmount(Double amount) { this.amount = amount; }
     public LocalDate getNextDate() { return nextDate; }
     public void setNextDate(LocalDate nextDate) { this.nextDate = nextDate; }
-    public Boolean isActive() { return isActive; }
-    public void setActive(Boolean active) { isActive = active; }
-    public Integer getFrequencyId() { return frequencyId; }
-    public void setFrequencyId(Integer frequencyId) { this.frequencyId = frequencyId; }
-    public Integer getAccountId() { return accountId; }
-    public void setAccountId(Integer accountId) { this.accountId = accountId; }
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    public FrequencyModel getFrequency() { return frequency; }
+    public void setFrequency(FrequencyModel frequency) { this.frequency = frequency; }
+    public AccountModel getAccount() { return account; }
+    public void setAccount(AccountModel account) { this.account = account; }
 }

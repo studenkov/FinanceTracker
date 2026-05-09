@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ Панель - Финансовый трекер</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <h1>Finance tracker</h1>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="/transactions">Транзакции</a>
+        <a href="/budgets">Финансы</a>
+        <a href="/categories">Категории</a>
+        <a href="/goals">Цели</a>
+        <a href="/admin">Админ Панель</a>
+    </nav>
+</header>
+<main>
+    <div class="content-grid">
+        <div class="left-column">
+            <section class="card-section">
+                <h2>Панель Администратора</h2>
+                <div th:if="${errorMessage}" style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #f5c6cb;">
+                    <strong th:text="${errorMessage}"></strong>
+                </div>
+                <div class="admin-nav">
+                    <button type="button" th:onclick="|window.location.href='@{/admin/users}'|" th:class="${activeTab == 'users' ? 'active' : ''}">Пользователи</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/accounts}'|" th:class="${activeTab == 'accounts' ? 'active' : ''}">Счета</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/categories}'|" th:class="${activeTab == 'categories' ? 'active' : ''}">Категории</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/transactions}'|" th:class="${activeTab == 'transactions' ? 'active' : ''}">Транзакции</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/budgets}'|" th:class="${activeTab == 'budgets' ? 'active' : ''}">Бюджеты</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/goals}'|" th:class="${activeTab == 'goals' ? 'active' : ''}">Цели</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/roles}'|" th:class="${activeTab == 'roles' ? 'active' : ''}">Роли</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/types}'|" th:class="${activeTab == 'types' ? 'active' : ''}">Типы</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/currencies}'|" th:class="${activeTab == 'currencies' ? 'active' : ''}">Валюты</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/frequencies}'|" th:class="${activeTab == 'frequencies' ? 'active' : ''}">Частоты</button>
+                    <button type="button" th:onclick="|window.location.href='@{/admin/recurring}'|" th:class="${activeTab == 'recurring' ? 'active' : ''}">Повторяющиеся</button>
+                </div>
+                <div th:replace="${content}"></div>
+            </section>
+        </div>
+    </div>
+</main>
+<footer>
+    © 2026 Finance tracker
+</footer>
+<script>
+    function toggleForm(formId) {
+        const form = document.getElementById(formId);
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+    function toggleEdit(btn, isEditing) {
+        const tr = btn.closest('tr');
+        tr.querySelectorAll('.read-mode').forEach(el => {
+            if (isEditing) el.classList.add('hidden'); else el.classList.remove('hidden');
+        });
+        tr.querySelectorAll('.edit-mode').forEach(el => {
+            if (isEditing) el.classList.remove('hidden'); else el.classList.add('hidden');
+        });
+    }
+</script>
+</body>
+</html>

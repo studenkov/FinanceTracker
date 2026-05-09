@@ -580,3 +580,43 @@ tbody tr:hover td {
 .hidden {
     display: none !important;
 }
+
+.search-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.search-bar input[type="text"] {
+    padding: 10px 14px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 10px;
+    font-family: var(--font-family), sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+    min-width: 220px;
+}
+
+.search-bar input[type="text"]:focus {
+    border-color: var(--color-accent);
+}
+
+.form-group select {
+    padding: 10px 14px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 10px;
+    font-family: var(--font-family), sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: pointer;
+    appearance: none;
+    background: #fff no-repeat right 12px center;
+    padding-right: 36px;
+}
+
+.form-group select:focus {
+    border-color: var(--color-accent);
+}
