@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Управление ролями - FinanceTracker</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<header>
+  <h1>FinanceTracker | Управление доступом</h1>
+  <nav>
+    <a th:href="@{/}">На главную</a>
+  </nav>
+</header>
+
+<main>
+  <div class="card-section">
+    <h2>Пользователи системы</h2>
+
+    <div class="card table-container">
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Логин</th>
+          <th>Никнейм</th>
+          <th>Текущие Роли</th>
+          <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${users}">
+          <td th:text="${u.id}"></td>
+          <td th:text="${u.username}"></td>
+          <td th:text="${u.nickname}"></td>
+          <td th:text="${u.roles}"></td>
+          <td>
+            <a class="btn btn-sm btn-edit" th:href="@{/admin/roles/{id}/update(id=${u.id})}" style="text-decoration: none;">
+              Изменить права
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

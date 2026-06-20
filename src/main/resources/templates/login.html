@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход - FinanceTracker</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<header>
+    <h1>FinanceTracker</h1>
+</header>
+
+<main style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+    <div class="card" style="max-width: 400px; width: 100%;">
+        <h2 class="card-title" style="text-align: center; font-size: 24px; color: var(--color-accent);">Вход в систему</h2>
+
+        <div th:if="${param.error}" style="color: var(--color-expense); text-align: center; font-weight: 500; margin-bottom: 16px;">
+            Неверный логин или пароль!
+        </div>
+        <div th:if="${param.logout}" style="color: var(--color-income); text-align: center; font-weight: 500; margin-bottom: 16px;">
+            Вы успешно вышли из системы.
+        </div>
+
+        <form th:action="@{/login}" method="post" style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" required placeholder="Введите логин">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required placeholder="Введите пароль">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Войти</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px; font-size: 14px;">
+            Нет аккаунта?
+            <a th:href="@{/registration}" style="color: var(--color-accent); font-weight: 600; text-decoration: none;">Зарегистрироваться</a>
+        </p>
+    </div>
+</main>
+</body>
+</html>

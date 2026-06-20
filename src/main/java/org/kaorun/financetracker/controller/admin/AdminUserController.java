@@ -3,6 +3,7 @@ package org.kaorun.financetracker.controller.admin;
 import jakarta.validation.Valid;
 import org.kaorun.financetracker.model.UserModel;
 import org.kaorun.financetracker.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,8 +14,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/admin/users")
 public class AdminUserController extends AbstractAdminController {
     private final UserService service;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminUserController(UserService service) { this.service = service; }
+    public AdminUserController(UserService service, PasswordEncoder passwordEncoder) {
+        this.service = service;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping
     public String list(
@@ -50,6 +55,10 @@ public class AdminUserController extends AbstractAdminController {
         if (hasErrors(result, redirectAttrs, "пользователя", entity)) {
             return redirect("/admin/users", 0, null);
         }
+
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        entity.setActive(true);
+
         service.add(entity);
         return redirect("/admin/users", 0, null);
     }
@@ -65,6 +74,18 @@ public class AdminUserController extends AbstractAdminController {
         if (hasErrors(result, redirectAttrs, "пользователя", entity)) {
             return redirect("/admin/users", currentPage, query);
         }
+
+        UserModel existingUser = service.findById(entity.getId());
+
+        if (entity.getPassword() != null && !entity.getPassword().isEmpty() && !entity.getPassword().equals(existingUser.getPassword())) {
+            entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        } else {
+            entity.setPassword(existingUser.getPassword());
+        }
+
+        entity.setRoles(existingUser.getRoles());
+        entity.setActive(existingUser.isActive());
+
         service.update(entity);
         return redirect("/admin/users", currentPage, query);
     }

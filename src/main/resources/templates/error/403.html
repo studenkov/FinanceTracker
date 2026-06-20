@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ запрещен</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .error-container {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; height: 100vh; text-align: center;
+            font-family: 'Google Sans', sans-serif;
+        }
+        .error-code { font-size: 6rem; font-weight: bold; color: #dc3545; margin: 0; }
+        .error-msg { font-size: 1.5rem; margin-bottom: 20px; color: #333; }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1 class="error-code">403</h1>
+    <div class="error-msg">У вашей роли нет прав для доступа к этой странице</div>
+    <a th:href="@{/}" class="btn btn-primary">Вернуться на главную</a>
+</div>
+</body>
+</html>

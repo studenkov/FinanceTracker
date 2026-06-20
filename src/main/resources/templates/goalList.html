@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,11 +15,17 @@
     <h1>Finance tracker</h1>
     <nav>
         <a href="/">Главная</a>
+        <a href="/accounts">Мои счета</a>
         <a href="/transactions">Транзакции</a>
         <a href="/budgets">Финансы</a>
         <a href="/categories">Категории</a>
         <a href="/goals">Цели</a>
-        <a href="/admin">Админ Панель</a>
+        <a href="/admin" sec:authorize="hasAuthority('ADMIN')">Админ Панель</a>
+        <form th:action="@{/logout}" method="post" style="margin: 0; padding: 0; display: inline;">
+            <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--color-expense); color: white; border: none; padding: 6px 12px; margin-left: 16px;">
+                Выход
+            </button>
+        </form>
     </nav>
 </header>
 

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class UserModel {
@@ -28,8 +30,13 @@ public class UserModel {
     @NotBlank(message = "Поле не может быть пустым")
     private String nickname;
 
-    @NotNull(message = "Укажите ID роли")
-    private Integer roleId;
+    @Column(columnDefinition = "boolean default true")
+    private boolean active = true;
+
+    @ElementCollection(targetClass = RoleEnum.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<RoleEnum> roles;
 
     public UserModel() {}
 
@@ -38,7 +45,6 @@ public class UserModel {
         this.password = password;
         this.email = email;
         this.nickname = nickname;
-        this.roleId = roleId;
     }
 
     public Long getId() { return id; }
@@ -51,6 +57,20 @@ public class UserModel {
     public void setEmail(String email) { this.email = email; }
     public String getNickname() { return nickname; }
     public void setNickname(String nickname) { this.nickname = nickname; }
-    public Integer getRoleId() { return roleId; }
-    public void setRoleId(Integer roleId) { this.roleId = roleId; }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Set<RoleEnum> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEnum> roles) {
+        this.roles = roles;
+    }
 }

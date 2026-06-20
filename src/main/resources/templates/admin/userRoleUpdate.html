@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменение ролей - FinanceTracker</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<header>
+    <h1>FinanceTracker | Редактор</h1>
+    <nav>
+        <a th:href="@{/admin/roles}">Назад к списку</a>
+    </nav>
+</header>
+
+<main style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <div class="card" style="max-width: 500px; width: 100%;">
+        <h2 class="card-title" style="text-align: center; color: var(--color-accent); font-size: 22px;">
+            Роли пользователя: <span th:text="${user_object.username}"></span>
+        </h2>
+        <p style="text-align: center; color: #666; margin-bottom: 24px;">Отметьте нужные уровни доступа</p>
+
+        <form th:action="@{/admin/roles/{id}/update(id=${user_object.id})}" method="post" style="display: flex; flex-direction: column; gap: 16px;">
+
+            <div class="form-group" style="background: var(--color-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--color-card-border);">
+
+                <label th:each="role : ${roles}" style="display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 500; cursor: pointer; margin-bottom: 12px;">
+
+                    <input type="checkbox" name="roles[]" th:value="${role}"
+                           th:checked="${user_object.roles.contains(role)}"
+                           style="width: 20px; height: 20px; accent-color: var(--color-accent); cursor: pointer;">
+
+                    <span th:text="${role}"></span>
+                </label>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 16px;">Сохранить новые роли</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

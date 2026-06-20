@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация - FinanceTracker</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<header>
+    <h1>FinanceTracker</h1>
+</header>
+
+<main style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+    <div class="card" style="max-width: 450px; width: 100%;">
+        <h2 class="card-title" style="text-align: center; font-size: 24px; color: var(--color-accent);">Новый аккаунт</h2>
+
+        <div th:if="${message}" th:text="${message}" style="color: var(--color-expense); text-align: center; font-weight: 500; margin-bottom: 16px;"></div>
+
+        <form th:action="@{/registration}" th:object="${user}" method="post" style="display: flex; flex-direction: column; gap: 16px;">
+
+            <div class="form-group">
+                <label for="username">Имя пользователя (Логин)</label>
+                <input type="text" id="username" th:field="*{username}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" th:field="*{password}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail адрес</label>
+                <input type="email" id="email" th:field="*{email}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nickname">Как к вам обращаться (Никнейм)?</label>
+                <input type="text" id="nickname" th:field="*{nickname}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Создать аккаунт</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px; font-size: 14px;">
+            Уже есть аккаунт?
+            <a th:href="@{/login}" style="color: var(--color-accent); font-weight: 600; text-decoration: none;">Войти</a>
+        </p>
+    </div>
+</main>
+</body>
+</html>
