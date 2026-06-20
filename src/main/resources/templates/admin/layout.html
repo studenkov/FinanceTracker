@@ -21,7 +21,7 @@
         <a href="/budgets">Финансы</a>
         <a href="/categories">Категории</a>
         <a href="/goals">Цели</a>
-        <a href="/admin" sec:authorize="hasAuthority('ADMIN')">Админ Панель</a>
+        <a href="/admin" sec:authorize="hasAuthority('ADMIN') or hasAuthority('MANAGER')">Админ Панель</a>
         <form th:action="@{/logout}" method="post" style="margin: 0; padding: 0; display: inline;">
             <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--color-expense); color: white; border: none; padding: 6px 12px; margin-left: 16px;">
                 Выход
@@ -39,13 +39,13 @@
                     <strong th:text="${errorMessage}"></strong>
                 </div>
                 <div class="admin-nav">
-                    <button type="button" th:onclick="|window.location.href='@{/admin/users}'|" th:class="${activeTab == 'users' ? 'active' : ''}">Пользователи</button>
+                    <button type="button" sec:authorize="hasAuthority('ADMIN')" th:onclick="|window.location.href='@{/admin/users}'|" th:class="${activeTab == 'users' ? 'active' : ''}">Пользователи</button>
+                    <button type="button" sec:authorize="hasAuthority('ADMIN')" th:onclick="|window.location.href='@{/admin/roles}'|" th:class="${activeTab == 'roles' ? 'active' : ''}">Роли</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/accounts}'|" th:class="${activeTab == 'accounts' ? 'active' : ''}">Счета</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/categories}'|" th:class="${activeTab == 'categories' ? 'active' : ''}">Категории</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/transactions}'|" th:class="${activeTab == 'transactions' ? 'active' : ''}">Транзакции</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/budgets}'|" th:class="${activeTab == 'budgets' ? 'active' : ''}">Бюджеты</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/goals}'|" th:class="${activeTab == 'goals' ? 'active' : ''}">Цели</button>
-                    <button type="button" th:onclick="|window.location.href='@{/admin/roles}'|" th:class="${activeTab == 'roles' ? 'active' : ''}">Роли</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/types}'|" th:class="${activeTab == 'types' ? 'active' : ''}">Типы</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/currencies}'|" th:class="${activeTab == 'currencies' ? 'active' : ''}">Валюты</button>
                     <button type="button" th:onclick="|window.location.href='@{/admin/frequencies}'|" th:class="${activeTab == 'frequencies' ? 'active' : ''}">Частоты</button>
