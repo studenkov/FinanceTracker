@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.RoleEnum;
 import org.kaorun.financetracker.model.UserModel;
 import org.kaorun.financetracker.service.UserService;
@@ -12,14 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Collections;
 
 @Controller
+@RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @GetMapping("/login")
     public String login() {
@@ -34,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String registerUser(UserModel user, Model model) {
-        if (!userService.findByUsername(user.getUsername()).isEmpty()) {
+        if (userService.existsByUsername(user.getUsername())) {
             model.addAttribute("message", "Пользователь с таким логином уже существует!");
             return "registration";
         }
@@ -48,6 +45,6 @@ public class AuthController {
 
     @GetMapping("/access-denied")
     public String accessDenied() {
-        return "accessDenied"; // Страница из задания на 3
+        return "error/403";
     }
 }

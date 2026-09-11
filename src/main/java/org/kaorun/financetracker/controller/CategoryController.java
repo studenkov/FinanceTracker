@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.CategoryModel;
 import org.kaorun.financetracker.service.CategoryService;
 import org.kaorun.financetracker.service.TypeService;
@@ -12,16 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/categories")
+@RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService service;
     private final TypeService typeService;
     private final UserService userService;
-
-    public CategoryController(CategoryService service, TypeService typeService, UserService userService) {
-        this.service = service;
-        this.typeService = typeService;
-        this.userService = userService;
-    }
 
     @GetMapping
     public String getAll(Model model, @RequestParam(required = false) String query, @RequestParam(defaultValue = "0") int page) {

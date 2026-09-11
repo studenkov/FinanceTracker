@@ -26,6 +26,8 @@ public class OpenApiConfig {
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                                .description("Введите ваш JWT токен в формате: Bearer <токен>")));
+                                .description("Ваш JWT токен")
+                        )
+                );
     }
 }

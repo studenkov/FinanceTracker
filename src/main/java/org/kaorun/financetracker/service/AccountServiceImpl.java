@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.service;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.AccountModel;
 import org.kaorun.financetracker.repository.AccountRepository;
 import org.springframework.data.domain.PageRequest;
@@ -8,12 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository repository;
-
-    public AccountServiceImpl(AccountRepository repository) {
-        this.repository = repository;
-    }
 
     public List<AccountModel> findAll() {
         return repository.findAll();

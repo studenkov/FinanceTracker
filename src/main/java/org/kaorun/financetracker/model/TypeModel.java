@@ -2,10 +2,16 @@ package org.kaorun.financetracker.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 @Entity
 @Table(name = "types")
-public class TypeModel {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class TypeModel implements Identifiable<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,15 +20,7 @@ public class TypeModel {
     @NotBlank(message = "Поле не может быть пустым")
     private String title;
 
-    public TypeModel() {
-    }
-
     public TypeModel(String title) {
         this.title = title;
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
 }

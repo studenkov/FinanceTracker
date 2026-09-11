@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller.admin;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.UserModel;
 import org.kaorun.financetracker.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,14 +13,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/users")
+@RequiredArgsConstructor
 public class AdminUserController extends AbstractAdminController {
     private final UserService service;
     private final PasswordEncoder passwordEncoder;
-
-    public AdminUserController(UserService service, PasswordEncoder passwordEncoder) {
-        this.service = service;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @GetMapping
     public String list(

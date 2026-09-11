@@ -20,8 +20,7 @@
         <a href="/budgets">Финансы</a>
         <a href="/categories">Категории</a>
         <a href="/goals">Цели</a>
-
-        <a href="/admin" sec:authorize="hasAuthority('ADMIN')">Админ Панель</a>
+        <a href="/admin" sec:authorize="hasAnyAuthority('ADMIN', 'MANAGER')">Админ Панель</a>
 
         <form th:action="@{/logout}" method="post" style="margin: 0; padding: 0; display: inline;">
             <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--color-expense); color: white; border: none; padding: 6px 12px; margin-left: 16px;">
@@ -33,16 +32,23 @@
 
 <main>
     <section class="card-section">
-        <h2>Транзакции</h2>
+        <h2>Транзакции и расходы</h2>
 
-        <div class="card add-card">
+        <div th:if="${error}"
+             style="color: #721c24; background-color: #f8d7da; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+            <strong th:text="${error}"></strong>
+        </div>
+
+        <div class="card add-card" style="margin-bottom: 24px;">
+            <h3 style="margin-bottom: 16px; color: var(--color-accent);">Добавить операцию</h3>
             <form th:action="@{/transactions/add}" method="post">
                 <div class="form-row">
                     <div class="form-group">
                         <label>Категория</label>
                         <select name="category.id" required>
                             <option value="" disabled selected>Выберите категорию</option>
-                            <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.title}"></option>
+                            <option th:each="c : ${categories}" th:value="${c.id}"
+                                    th:text="${c.title + ' (' + (c.type != null ? c.type.title : '') + ')'}"></option>
                         </select>
                     </div>
 
@@ -50,26 +56,93 @@
                         <label>Счёт</label>
                         <select name="account.id" required>
                             <option value="" disabled selected>Выберите счёт</option>
-                            <option th:each="a : ${accounts}" th:value="${a.id}" th:text="${a.title}"></option>
+                            <option th:each="a : ${accounts}" th:value="${a.id}"
+                                    th:text="${a.title + ' (' + a.balance + ' ' + (a.currency != null ? a.currency.title : '₽') + ')'}"></option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label>Дата</label>
-                        <input type="date" name="date" required>
+                        <input type="date" name="date" required
+                               th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
                     </div>
 
                     <div class="form-group">
-                        <label>Сумма</label>
-                        <input type="number" name="amount" step="0.01" required>
+                        <label>Сумма (₽)</label>
+                        <input type="number" name="amount" step="0.01" min="0.01" placeholder="0.00" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <div class="form-group">
+                        <label>Заметка / Описание</label>
+                        <input type="text" name="note" placeholder="Например: Супермаркет">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="height: 42px; align-self: flex-end;">Добавить
+                    </button>
                 </div>
             </form>
         </div>
 
-       
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="color: var(--color-accent);">История операций</h3>
+            <form th:action="@{/transactions}" method="get" class="form-row" style="margin-bottom: 0;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="text" name="query" th:value="${query}" placeholder="Поиск по ID или заметке...">
+                </div>
+                <button type="submit" class="btn btn-secondary">Искать</button>
+                <a th:if="${not #strings.isEmpty(query)}" th:href="@{/transactions}" class="btn btn-secondary"
+                   style="text-decoration: none;">Сброс</a>
+            </form>
+        </div>
+
+        <div class="card table-container">
+            <div th:if="${#lists.isEmpty(transactions)}" style="padding: 24px; text-align: center; color: #777;">
+                Операции не найдены. Создайте первую операцию через форму выше!
+            </div>
+
+            <table th:if="${not #lists.isEmpty(transactions)}" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                <tr style="border-bottom: 2px solid var(--color-accent); text-align: left;">
+                    <th style="padding: 12px;">ID</th>
+                    <th style="padding: 12px;">Дата</th>
+                    <th style="padding: 12px;">Категория</th>
+                    <th style="padding: 12px;">Счет</th>
+                    <th style="padding: 12px;">Заметка</th>
+                    <th style="padding: 12px;">Сумма</th>
+                    <th style="padding: 12px; text-align: right;">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tx : ${transactions}" style="border-bottom: 1px solid var(--color-card-border);">
+                    <td style="padding: 12px;" th:text="${tx.id}"></td>
+                    <td style="padding: 12px;" th:text="${tx.date}"></td>
+                    <td style="padding: 12px;">
+                        <span th:text="${tx.category?.title}" style="font-weight: 500;"></span>
+                        <span th:if="${tx.category?.type != null}"
+                              th:text="${tx.category.type.title}"
+                              th:style="${#strings.containsIgnoreCase(tx.category.type.title, 'доход') ? 'color: var(--color-income); font-size: 12px; margin-left: 4px;' : 'color: var(--color-expense); font-size: 12px; margin-left: 4px;'}">
+                        </span>
+                    </td>
+                    <td style="padding: 12px;" th:text="${tx.account?.title}"></td>
+                    <td style="padding: 12px;" th:text="${tx.note}"></td>
+                    <td style="padding: 12px; font-weight: 700;"
+                        th:text="${(tx.category?.type != null and #strings.containsIgnoreCase(tx.category.type.title, 'доход') ? '+' : '-') + tx.amount + ' ₽'}"
+                        th:style="${tx.category?.type != null and #strings.containsIgnoreCase(tx.category.type.title, 'доход') ? 'color: var(--color-income);' : 'color: var(--color-expense);'}">
+                    </td>
+                    <td style="padding: 12px; text-align: right;">
+                        <form th:action="@{/transactions/delete/{id}(id=${tx.id})}" method="post"
+                              style="display: inline;"
+                              onsubmit="return confirm('Удалить эту операцию? Баланс счета будет скорректирован.');">
+                            <button type="submit" class="btn btn-secondary btn-sm"
+                                    style="background: var(--color-expense); color: white; border: none; padding: 4px 10px;">
+                                Удалить
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 </main>
 

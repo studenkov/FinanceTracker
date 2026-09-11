@@ -1,16 +1,16 @@
 package org.kaorun.financetracker.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.service.RecurringTransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class RecurringTransactionController {
 
-    @Autowired
-    private RecurringTransactionService service;
+    private final RecurringTransactionService service;
 
     @GetMapping("/recurring")
     public String getAll(Model model) {

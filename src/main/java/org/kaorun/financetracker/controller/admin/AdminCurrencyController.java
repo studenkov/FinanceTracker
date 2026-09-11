@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller.admin;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.CurrencyModel;
 import org.kaorun.financetracker.service.CurrencyService;
 import org.springframework.stereotype.Controller;
@@ -11,10 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/currencies")
+@RequiredArgsConstructor
 public class AdminCurrencyController extends AbstractAdminController {
     private final CurrencyService service;
-
-    public AdminCurrencyController(CurrencyService service) { this.service = service; }
 
     @GetMapping
     public String list(

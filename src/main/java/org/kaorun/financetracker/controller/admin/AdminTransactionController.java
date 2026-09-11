@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller.admin;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.TransactionModel;
 import org.kaorun.financetracker.service.AccountService;
 import org.kaorun.financetracker.service.CategoryService;
@@ -13,16 +14,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/transactions")
+@RequiredArgsConstructor
 public class AdminTransactionController extends AbstractAdminController {
     private final TransactionService service;
     private final CategoryService categoryService;
     private final AccountService accountService;
-
-    public AdminTransactionController(TransactionService service, CategoryService categoryService, AccountService accountService) {
-        this.service = service;
-        this.categoryService = categoryService;
-        this.accountService = accountService;
-    }
 
     @GetMapping
     public String list(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String query, Model model) {

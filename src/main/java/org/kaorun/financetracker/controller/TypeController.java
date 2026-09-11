@@ -1,8 +1,8 @@
 package org.kaorun.financetracker.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.TypeModel;
 import org.kaorun.financetracker.service.TypeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class TypeController {
 
-    @Autowired
-    private TypeService service;
+    private final TypeService service;
 
     @GetMapping("/types")
     public String getAll(Model model) {

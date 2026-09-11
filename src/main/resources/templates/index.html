@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,92 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+    <style>
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--color-accent);
+            font-size: 22px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 4px;
+        }
+
+        .api-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .api-badge::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2e7d32;
+        }
+    </style>
 </head>
 <body>
 
@@ -20,7 +106,7 @@
         <a href="/budgets">Финансы</a>
         <a href="/categories">Категории</a>
         <a href="/goals">Цели</a>
-        <a href="/admin/categories" sec:authorize="hasAnyAuthority('ADMIN', 'MANAGER')">Админ Панель</a>
+        <a href="/admin" sec:authorize="hasAnyAuthority('ADMIN', 'MANAGER')">Админ Панель</a>
         <form th:action="@{/logout}" method="post" style="margin: 0; padding: 0; display: inline;">
             <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--color-expense); color: white; border: none; padding: 6px 12px; margin-left: 16px;">
                 Выход
@@ -30,129 +116,86 @@
 </header>
 
 <main>
+    <!-- Общий баланс -->
     <section class="balance-card">
         <div class="balance-header">
             <span>Общий баланс</span>
         </div>
-        <div class="balance-amount">1,247,500 ₽</div>
+        <div class="balance-amount" id="totalBalance">0.00 ₽</div>
         <div class="balance-details">
             <div class="detail income">
                 <span>Доход за месяц</span>
-                <strong>+350,000 ₽</strong>
+                <strong id="monthlyIncome">+0.00 ₽</strong>
             </div>
             <div class="detail expense">
                 <span>Расход за месяц</span>
-                <strong>-198,450 ₽</strong>
+                <strong id="monthlyExpense">-0.00 ₽</strong>
             </div>
             <div class="detail savings">
                 <span>Накоплено</span>
-                <strong>+151,550 ₽</strong>
+                <strong id="netSavings">+0.00 ₽</strong>
             </div>
         </div>
 
         <div class="balance-action">
-            <button class="add">Добавить</button>
-            <button class="remove">Списать</button>
+            <button class="add" onclick="openTransactionModal(true)">+ Добавить доход</button>
+            <button class="remove" onclick="openTransactionModal(false)">− Списать расход</button>
         </div>
     </section>
 
     <div class="content-grid">
         <div class="left-column">
+            <!-- Мои счета -->
             <section class="card-section">
                 <h2>Мои счета</h2>
-                <div class="cards-grid">
-                    <div class="card account">
-                        <div class="card-title">Основная карта</div>
-                        <div class="card-subtitle">Дебетовая</div>
-                        <div class="card-amount">847,500 ₽</div>
-                    </div>
-                    <div class="card account">
-                        <div class="card-title">Накопления</div>
-                        <div class="card-subtitle">Сберегательный</div>
-                        <div class="card-amount">300,000 ₽</div>
-                    </div>
-                    <div class="card account">
-                        <div class="card-title">Инвестиции</div>
-                        <div class="card-subtitle">Брокерский</div>
-                        <div class="card-amount">100,000 ₽</div>
+                <div class="cards-grid" id="accountsList">
+                    <div class="card account" style="text-align: center; color: #888;">Загрузка счетов через API...
                     </div>
                 </div>
             </section>
 
+            <!-- Последние операции -->
             <section class="card-section">
                 <h2>Последние операции</h2>
-                <div class="card transactions" onclick="location.href='/transactions'" style="cursor: pointer;">
-                    <div class="transaction income">
-                        <span>Зарплата</span>
-                        <strong>+180,000 ₽</strong>
-                    </div>
-                    <div class="transaction expense">
-                        <span>Продуктовый магазин</span>
-                        <strong>-3,450 ₽</strong>
-                    </div>
-                    <div class="transaction expense">
-                        <span>Кафе "Старбакс"</span>
-                        <strong>-890 ₽</strong>
-                    </div>
+                <div class="card transactions" id="recentTransactionsList" onclick="location.href='/transactions'"
+                     style="cursor: pointer;">
+                    <div style="text-align: center; padding: 16px; color: #888;">Загрузка операций...</div>
                 </div>
             </section>
 
+            <!-- Бюджет по категориям -->
             <section class="card-section">
                 <h2>Бюджет по категориям</h2>
-                <div class="card budgets">
-                    <div class="budget-item">
-                        <span>Продукты</span>
-                        <span>42,000 / 50,000 ₽</span>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 84%; background-color:#2E7D32;"></div>
-                        </div>
-                    </div>
-                    <div class="budget-item">
-                        <span>Транспорт</span>
-                        <span>8,500 / 15,000 ₽</span>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 57%; background-color:#2E7D32;"></div>
-                        </div>
-                    </div>
+                <div class="card budgets" id="budgetsList">
+                    <div style="text-align: center; padding: 16px; color: #888;">Загрузка бюджетов...</div>
                 </div>
             </section>
         </div>
 
         <div class="right-column">
+            <!-- Финансовые цели -->
             <section class="card-section">
                 <h2>Финансовые цели</h2>
-                <div class="card goals">
-                    <div class="goal-item">
-                        <span>Отпуск в Турции</span>
-                        <span>180,000 / 250,000 ₽</span>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 72%; background-color:#2E7D32;"></div>
-                        </div>
-                    </div>
-                    <div class="goal-item">
-                        <span>Новый ноутбук</span>
-                        <span>95,000 / 150,000 ₽</span>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 63%; background-color:#2E7D32;"></div>
-                        </div>
-                    </div>
+                <div class="card goals" id="goalsList">
+                    <div style="text-align: center; padding: 16px; color: #888;">Загрузка целей...</div>
                 </div>
             </section>
 
+            <!-- Быстрая статистика -->
             <section class="card-section">
                 <h2>Быстрая статистика</h2>
                 <div class="card stats">
                     <div class="stat-item">
                         <span>Транзакций за месяц</span>
-                        <strong>127</strong>
+                        <strong id="monthlyCount">0</strong>
                     </div>
                     <div class="stat-item">
-                        <span>Средний чек</span>
-                        <strong>1,562 ₽</strong>
+                        <span>Средний расход</span>
+                        <strong id="averageExpense">0 ₽</strong>
                     </div>
                     <div class="stat-item">
-                        <span>Рост за год</span>
-                        <strong>+18%</strong>
+                        <span>Статус</span>
+                        <strong style="color: #2e7d32;">Активен</strong>
                     </div>
                 </div>
             </section>
@@ -160,9 +203,260 @@
     </div>
 </main>
 
+<!-- Модальное окно быстрого добавления операции -->
+<div class="modal-backdrop" id="txModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Новая операция</h3>
+            <button class="modal-close" onclick="closeTransactionModal()">&times;</button>
+        </div>
+        <form id="txForm" onsubmit="handleTransactionSubmit(event)">
+            <input type="hidden" id="isIncomeFlag" value="false">
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Счёт</label>
+                <select id="modalAccount"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+                    <option value="" disabled selected>Выберите счет</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Категория</label>
+                <select id="modalCategory"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+                    <option value="" disabled selected>Выберите категорию</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Сумма (₽)</label>
+                <input type="number" id="modalAmount" step="0.01" min="0.01" placeholder="0.00"
+                       style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Дата</label>
+                <input type="date" id="modalDate"
+                       style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Заметка / комментарий</label>
+                <input type="text" id="modalNote" placeholder="Например: Супермаркет"
+                       style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeTransactionModal()">Отмена</button>
+                <button type="submit" class="btn btn-primary" id="modalSubmitBtn">Провести операцию</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <footer>
     © 2026 Finance tracker
 </footer>
+
+<script>
+    let currentAccounts = [];
+    let currentCategories = [];
+
+    // Форматирование чисел в рубли
+    function formatCurrency(val) {
+        if (val === null || val === undefined) return "0.00 ₽";
+        return new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(val) + " ₽";
+    }
+
+    // Загрузка данных дашборда через REST API
+    async function loadDashboardData() {
+        try {
+            const res = await fetch('/api/dashboard/stats');
+            if (!res.ok) throw new Error("HTTP error " + res.status);
+            const data = await res.json();
+
+            // Баланс и сводка
+            document.getElementById('totalBalance').innerText = formatCurrency(data.totalBalance);
+            document.getElementById('monthlyIncome').innerText = "+" + formatCurrency(data.monthlyIncome);
+            document.getElementById('monthlyExpense').innerText = "-" + formatCurrency(data.monthlyExpense);
+            document.getElementById('netSavings').innerText = (data.netSavings >= 0 ? "+" : "") + formatCurrency(data.netSavings);
+
+            // Статистика
+            document.getElementById('monthlyCount').innerText = data.monthlyCount || 0;
+            document.getElementById('averageExpense').innerText = formatCurrency(data.averageExpense);
+
+            // Счета
+            currentAccounts = data.accounts || [];
+            const accountsContainer = document.getElementById('accountsList');
+            if (currentAccounts.length === 0) {
+                accountsContainer.innerHTML = '<div style="color: #777; padding: 12px;">Счета не найдены. Создайте первый счет в разделе "Мои счета".</div>';
+            } else {
+                accountsContainer.innerHTML = currentAccounts.map(acc => `
+                    <div class="card account">
+                        <div class="card-title">${acc.title}</div>
+                        <div class="card-subtitle">Валюта: ${acc.currency}</div>
+                        <div class="card-amount">${formatCurrency(acc.balance)}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Последние транзакции
+            const recentTxContainer = document.getElementById('recentTransactionsList');
+            const txs = data.recentTransactions || [];
+            if (txs.length === 0) {
+                recentTxContainer.innerHTML = '<div style="color: #777; padding: 16px; text-align: center;">Транзакций пока нет. Нажмите "Добавить" для первой записи!</div>';
+            } else {
+                recentTxContainer.innerHTML = txs.map(tx => {
+                    const sign = tx.income ? "+" : "-";
+                    const cls = tx.income ? "income" : "expense";
+                    return `
+                        <div class="transaction ${cls}" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                            <div>
+                                <strong style="font-size: 15px;">${tx.categoryTitle}</strong>
+                                <span style="font-size: 12px; color: #777; margin-left: 8px;">${tx.date || ''} (${tx.accountTitle})</span>
+                                ${tx.note ? `<div style="font-size: 12px; color: #555; margin-top: 2px;">${tx.note}</div>` : ''}
+                            </div>
+                            <strong style="font-size: 16px; color: ${tx.income ? 'var(--color-income)' : 'var(--color-expense)'};">${sign}${formatCurrency(tx.amount)}</strong>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Бюджеты
+            const budgetsContainer = document.getElementById('budgetsList');
+            const budgets = data.budgets || [];
+            if (budgets.length === 0) {
+                budgetsContainer.innerHTML = '<div style="color: #777; padding: 12px;">Бюджеты не установлены. Добавьте лимит в разделе "Финансы".</div>';
+            } else {
+                budgetsContainer.innerHTML = budgets.map(b => {
+                    const color = b.exceeded ? 'var(--color-expense)' : (b.percentage > 80 ? '#FF9800' : 'var(--color-income)');
+                    return `
+                        <div class="budget-item" style="margin-bottom: 16px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                <span style="font-weight: 500;">${b.categoryTitle} ${b.exceeded ? '<span style="color: red; font-size: 11px;">(Превышен!)</span>' : ''}</span>
+                                <span>${formatCurrency(b.spentAmount)} / ${formatCurrency(b.limitAmount)}</span>
+                            </div>
+                            <div class="progress-bar" style="background: #eee; border-radius: 8px; height: 10px; overflow: hidden;">
+                                <div class="progress" style="width: ${b.percentage}%; background-color: ${color}; height: 100%; border-radius: 8px; transition: width 0.3s;"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Цели
+            const goalsContainer = document.getElementById('goalsList');
+            const goals = data.goals || [];
+            if (goals.length === 0) {
+                goalsContainer.innerHTML = '<div style="color: #777; padding: 12px;">Целей пока нет. Добавьте цель в разделе "Цели".</div>';
+            } else {
+                goalsContainer.innerHTML = goals.map(g => `
+                    <div class="goal-item" style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="font-weight: 500;">${g.title}</span>
+                            <span>${formatCurrency(g.currentAmount)} / ${formatCurrency(g.targetAmount)}</span>
+                        </div>
+                        <div class="progress-bar" style="background: #eee; border-radius: 8px; height: 10px; overflow: hidden;">
+                            <div class="progress" style="width: ${g.percentage}%; background-color: var(--color-income); height: 100%; border-radius: 8px; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (err) {
+            console.error("Failed to load dashboard stats via API:", err);
+        }
+    }
+
+    // Загрузка категорий для модального окна
+    async function preloadCategories() {
+        try {
+            const res = await fetch('/api/categories');
+            if (res.ok) currentCategories = await res.json();
+        } catch (e) {
+            console.error("Failed to preload categories:", e);
+        }
+    }
+
+    // Открытие модалки
+    function openTransactionModal(isIncome) {
+        document.getElementById('isIncomeFlag').value = isIncome ? "true" : "false";
+        document.getElementById('modalTitle').innerText = isIncome ? "Добавить доход (+)" : "Списать расход (−)";
+        document.getElementById('modalSubmitBtn').style.backgroundColor = isIncome ? "var(--color-income)" : "var(--color-expense)";
+        document.getElementById('modalDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('modalAmount').value = "";
+        document.getElementById('modalNote').value = "";
+
+        // Счета в селекте
+        const accSelect = document.getElementById('modalAccount');
+        accSelect.innerHTML = '<option value="" disabled selected>Выберите счет</option>' +
+            currentAccounts.map(a => `<option value="${a.id}">${a.title} (${formatCurrency(a.balance)})</option>`).join('');
+
+        // Категории в селекте с фильтрацией по типу
+        const catSelect = document.getElementById('modalCategory');
+        const targetType = isIncome ? "доход" : "расход";
+        const filteredCats = currentCategories.filter(c => {
+            if (!c.type || !c.type.title) return true;
+            return c.type.title.toLowerCase().includes(targetType);
+        });
+        catSelect.innerHTML = '<option value="" disabled selected>Выберите категорию</option>' +
+            (filteredCats.length > 0 ? filteredCats : currentCategories).map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+
+        document.getElementById('txModal').style.display = 'flex';
+    }
+
+    function closeTransactionModal() {
+        document.getElementById('txModal').style.display = 'none';
+    }
+
+    // Отправка транзакции через REST API
+    async function handleTransactionSubmit(e) {
+        e.preventDefault();
+        const accountId = document.getElementById('modalAccount').value;
+        const categoryId = document.getElementById('modalCategory').value;
+        const amount = parseFloat(document.getElementById('modalAmount').value);
+        const date = document.getElementById('modalDate').value;
+        const note = document.getElementById('modalNote').value;
+
+        if (!accountId || !categoryId || isNaN(amount) || amount <= 0) {
+            alert("Пожалуйста, заполните все обязательные поля корректно!");
+            return;
+        }
+
+        const payload = {
+            accountId: parseInt(accountId),
+            categoryId: parseInt(categoryId),
+            amount: amount,
+            date: date,
+            note: note
+        };
+
+        try {
+            const res = await fetch('/api/dashboard/quick-transaction', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                alert("Ошибка проведения операции: " + (errData.message || res.statusText));
+                return;
+            }
+
+            closeTransactionModal();
+            await loadDashboardData();
+        } catch (err) {
+            alert("Не удалось отправить запрос через API: " + err.message);
+        }
+    }
+
+    // Инициализация при загрузке
+    window.addEventListener('DOMContentLoaded', async () => {
+        await preloadCategories();
+        await loadDashboardData();
+    });
+</script>
 
 </body>
 </html>

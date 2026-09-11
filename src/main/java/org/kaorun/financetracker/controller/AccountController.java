@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.AccountModel;
 import org.kaorun.financetracker.model.UserModel;
 import org.kaorun.financetracker.service.AccountService;
@@ -16,17 +17,12 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("/accounts")
+@RequiredArgsConstructor
 public class AccountController {
 
     private final AccountService accountService;
     private final CurrencyService currencyService;
     private final UserService userService;
-
-    public AccountController(AccountService accountService, CurrencyService currencyService, UserService userService) {
-        this.accountService = accountService;
-        this.currencyService = currencyService;
-        this.userService = userService;
-    }
 
     @GetMapping
     public String showAccounts(Model model) {

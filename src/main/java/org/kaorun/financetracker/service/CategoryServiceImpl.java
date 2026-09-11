@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.service;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.CategoryModel;
 import org.kaorun.financetracker.repository.CategoryRepository;
 import org.springframework.data.domain.PageRequest;
@@ -8,13 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repository;
-
-    public CategoryServiceImpl(CategoryRepository repository) {
-        this.repository = repository;
-    }
 
     public List<CategoryModel> findAll() {
         return repository.findAll();

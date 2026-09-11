@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller.admin;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.TypeModel;
 import org.kaorun.financetracker.service.TypeService;
 import org.springframework.stereotype.Controller;
@@ -11,10 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/types")
+@RequiredArgsConstructor
 public class AdminTypeController extends AbstractAdminController {
     private final TypeService service;
-
-    public AdminTypeController(TypeService service) { this.service = service; }
 
     @GetMapping
     public String list(

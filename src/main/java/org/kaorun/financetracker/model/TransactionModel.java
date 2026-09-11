@@ -2,17 +2,24 @@ package org.kaorun.financetracker.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "transactions")
-public class TransactionModel {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class TransactionModel implements Identifiable<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     @NotNull(message = "Укажите категорию")
     private CategoryModel category;
 
@@ -26,21 +33,7 @@ public class TransactionModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     @NotNull(message = "Укажите счет")
     private AccountModel account;
-
-    public TransactionModel() {}
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public CategoryModel getCategory() { return category; }
-    public void setCategory(CategoryModel category) { this.category = category; }
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
-    public String getNote() { return note; }
-    public void setNote(String note) { this.note = note; }
-    public Double getAmount() { return amount; }
-    public void setAmount(Double amount) { this.amount = amount; }
-    public AccountModel getAccount() { return account; }
-    public void setAccount(AccountModel account) { this.account = account; }
 }

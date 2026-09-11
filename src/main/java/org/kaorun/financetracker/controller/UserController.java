@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.UserModel;
 import org.kaorun.financetracker.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -10,12 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService service;
-
-    public UserController(UserService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public String getAll(Model model, @RequestParam(defaultValue = "0") int page) {

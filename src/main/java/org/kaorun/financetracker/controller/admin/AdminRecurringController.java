@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller.admin;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.RecurringTransactionModel;
 import org.kaorun.financetracker.service.AccountService;
 import org.kaorun.financetracker.service.CategoryService;
@@ -14,18 +15,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/recurring")
+@RequiredArgsConstructor
 public class AdminRecurringController extends AbstractAdminController {
     private final RecurringTransactionService service;
     private final CategoryService categoryService;
     private final FrequencyService frequencyService;
     private final AccountService accountService;
-
-    public AdminRecurringController(RecurringTransactionService service, CategoryService categoryService, FrequencyService frequencyService, AccountService accountService) {
-        this.service = service;
-        this.categoryService = categoryService;
-        this.frequencyService = frequencyService;
-        this.accountService = accountService;
-    }
 
     @GetMapping
     public String list(

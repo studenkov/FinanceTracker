@@ -4,12 +4,7 @@ import org.kaorun.financetracker.model.TransactionModel;
 
 import java.util.List;
 
-public interface TransactionService {
-    List<TransactionModel> findAll();
-    TransactionModel findById(Long id);
+public interface TransactionService extends CrudService<TransactionModel, Long> {
     List<TransactionModel> findByNote(String note);
     List<TransactionModel> findPage(int page, int size);
-    TransactionModel add(TransactionModel x);
-    TransactionModel update(TransactionModel x);
-    void delete(Long id);
 }

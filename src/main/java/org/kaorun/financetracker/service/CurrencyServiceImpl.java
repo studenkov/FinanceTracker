@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.service;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.CurrencyModel;
 import org.kaorun.financetracker.repository.CurrencyRepository;
 import org.springframework.data.domain.PageRequest;
@@ -8,12 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CurrencyServiceImpl implements CurrencyService {
     private final CurrencyRepository repository;
-
-    public CurrencyServiceImpl(CurrencyRepository repository) {
-        this.repository = repository;
-    }
 
     public List<CurrencyModel> findAll() {
         return repository.findAll();

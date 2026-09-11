@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.service;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.RecurringTransactionModel;
 import org.kaorun.financetracker.repository.RecurringTransactionRepository;
 import org.springframework.data.domain.PageRequest;
@@ -8,12 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RecurringTransactionServiceImpl implements RecurringTransactionService {
     private final RecurringTransactionRepository repository;
-
-    public RecurringTransactionServiceImpl(RecurringTransactionRepository repository) {
-        this.repository = repository;
-    }
 
     public List<RecurringTransactionModel> findAll() {
         return repository.findAll();

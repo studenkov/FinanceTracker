@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.controller.admin;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.FrequencyModel;
 import org.kaorun.financetracker.service.FrequencyService;
 import org.springframework.stereotype.Controller;
@@ -11,10 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/frequencies")
+@RequiredArgsConstructor
 public class AdminFrequencyController extends AbstractAdminController {
     private final FrequencyService service;
-
-    public AdminFrequencyController(FrequencyService service) { this.service = service; }
 
     @GetMapping
     public String list(

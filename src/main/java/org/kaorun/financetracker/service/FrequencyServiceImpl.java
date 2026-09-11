@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.service;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.FrequencyModel;
 import org.kaorun.financetracker.repository.FrequencyRepository;
 import org.springframework.data.domain.PageRequest;
@@ -8,12 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FrequencyServiceImpl implements FrequencyService {
     private final FrequencyRepository repository;
-
-    public FrequencyServiceImpl(FrequencyRepository repository) {
-        this.repository = repository;
-    }
 
     public List<FrequencyModel> findAll() {
         return repository.findAll();

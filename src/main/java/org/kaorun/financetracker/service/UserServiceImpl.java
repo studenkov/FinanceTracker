@@ -1,6 +1,7 @@
 package org.kaorun.financetracker.service;
 
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.UserModel;
 import org.kaorun.financetracker.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
@@ -9,12 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
-
-    public UserServiceImpl(UserRepository repository) {
-        this.repository = repository;
-    }
 
     public List<UserModel> findAll() {
         return repository.findAll();
@@ -30,6 +28,10 @@ public class UserServiceImpl implements UserService {
 
     public List<UserModel> findPage(int page, int size) {
         return repository.findAll(PageRequest.of(page, size)).getContent();
+    }
+
+    public boolean existsByUsername(String username) {
+        return repository.existsByUsernameIgnoreCase(username);
     }
 
     public UserModel add(UserModel user) {

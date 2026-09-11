@@ -1,5 +1,6 @@
 package org.kaorun.financetracker.service;
 
+import lombok.RequiredArgsConstructor;
 import org.kaorun.financetracker.model.GoalModel;
 import org.kaorun.financetracker.repository.GoalRepository;
 import org.springframework.data.domain.PageRequest;
@@ -8,12 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GoalServiceImpl implements GoalService {
     private final GoalRepository repository;
-
-    public GoalServiceImpl(GoalRepository repository) {
-        this.repository = repository;
-    }
 
     public List<GoalModel> findAll() {
         return repository.findAll();
